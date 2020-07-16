@@ -1,0 +1,21 @@
+name: Echo
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: test
+        run: |
+          echo $ORG_GRADLE_PROJECT_signingKey
+          echo xxx123456xxx
+          echo $ORG_GRADLE_PROJECT_signingPassword
+          echo abcdefghijk
+          echo $SONARTYPE_USERNAME
+          echo This is a 0987654321 password?
+        env:
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_SIGNING_KEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_SIGNING_PASSWORD}}
+          SONARTYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          SONARTYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
