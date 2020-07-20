@@ -1,0 +1,61 @@
+// This example only shows how the environment variables provided by the GitHub action
+// are used for the different plugins related to the publishing process.
+// Thus, the configuration of the project is clearly incomplete!
+
+plugins {
+    id 'io.codearte.nexus-staging' version '0.21.1'
+}
+
+
+allprojects {
+    version = version
+    ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
+    ext.sonatypeUsername = System.getenv().getOrDefault("SONATYPE_USERNAME", "")
+    ext.sonatypePassword = System.getenv().getOrDefault("SONATYPE_PASSWORD", "")
+}
+
+// see https://github.com/Codearte/gradle-nexus-staging-plugin
+nexusStaging {
+    stagingProfileId = stagingProfileId
+    packageGroup = 'com.tngtech'
+    username = sonatypeUsername
+    password = sonatypePassword
+    numberOfRetries = 30 // Sonatype can be a bit slow in closing the repository
+}
+
+
+configure(subprojects) {
+    apply plugin: 'signing'
+    apply plugin: 'maven-publish'
+
+    // signing plugin, see http://www.gradle.org/docs/current/userguide/signing_plugin.html
+    signing {
+        required {
+            isReleaseVersion && gradle.taskGraph.hasTask('uploadArchives')
+        }
+        def signingKey = findProperty("signingKey")
+        def signingPassword = findProperty("signingPassword")
+        useInMemoryPgpKeys(signingKey, signingPassword)
+        sign configurations.archives
+    }
+
+    // see https://docs.gradle.org/current/userguide/publishing_maven.html
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2/') {
+                    authentication(userName: sonatypeUsername, password: sonatypePassword)
+                }
+                snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots/') {
+                    authentication(userName: sonatypeUsername, password: sonatypePassword)
+                }
+            }
+            //...
+        }
+    }
+
+    uploadArchives.onlyIf {
+        isReleaseVersion
+    }
+}
+

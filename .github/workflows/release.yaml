@@ -1,0 +1,36 @@
+name: Release
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'You have to provide a version (e.g. 0.14.0)'
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        run: |
+#         Personal access token is used to allow push from this action to that repository
+          git clone https://$API_TOKEN_GITHUB@github.com/TNG/<<YOUR_PROJECT>>.git
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+      - name: Build & Release
+        run: |
+          cd JGiven
+
+#         This will be the username and e-mail seen in the commit message.
+#         $ACTOR will be the username of the user that triggered the action
+          git config user.name $ACTOR
+          git config user.email "action@github.com"
+
+          ./release.sh ${{ github.event.inputs.version }}
+        env:
+          ACTOR: ${{ github.actor }}
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_SIGNING_KEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_SIGNING_PASSWORD}}
+          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+          GRADLE_PLUGIN_RELEASE_KEY: ${{ secrets.JGIVEN_GRADLE_PUBLISH_KEY }}
+          GRADLE_PLUGIN_RELEASE_PASSWORD: ${{ secrets.JGIVEN_GRADLE_PUBLISH_SECRET }}
