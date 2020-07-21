@@ -12,7 +12,7 @@ jobs:
     steps:
       - name: Checkout
         run: |
-#         Personal access token is used to allow push from this action to that repository
+          # Personal access token is used to allow push from this action to that repository
           git clone https://$API_TOKEN_GITHUB@github.com/TNG/<<YOUR_PROJECT>>.git
         env:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
@@ -20,8 +20,8 @@ jobs:
         run: |
           cd JGiven
 
-#         This will be the username and e-mail seen in the commit message.
-#         $ACTOR will be the username of the user that triggered the action
+          # This will be the username and e-mail seen in the commit message.
+          # $ACTOR will be the username of the user that triggered the action
           git config user.name $ACTOR
           git config user.email "action@github.com"
 
