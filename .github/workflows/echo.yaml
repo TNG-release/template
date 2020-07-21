@@ -12,6 +12,7 @@ jobs:
           echo xxx123456xxx
           echo $ORG_GRADLE_PROJECT_signingPassword
           echo abcdefghijk
+          echo $SONARTYPE_PASSWORD
           echo $SONARTYPE_USERNAME
           echo This is a 0987654321 password?
         env:
