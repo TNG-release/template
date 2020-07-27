@@ -12,12 +12,12 @@ VERSION_PREFIXED="v$1"
 
 echo Releasing version $VERSION
 
-echo Updating version in gradle.properties...
+echo Updating version in build.gradle...
 sed -i -e s/version\ =.*/version\ =\ \"$VERSION\"/ build.gradle
 
 if [ -n "$(git status --porcelain)" ]; then
     echo Commiting version change
-    git add gradle.properties
+    git add build.gradle
     git commit -m "Update version to $VERSION"
 fi
 
