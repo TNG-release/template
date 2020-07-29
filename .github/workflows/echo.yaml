@@ -6,15 +6,20 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        run: |
+          git clone https://github.com/TNG-release/template.git .
+          git checkout env.test
       - name: test
         run: |
-          echo $ORG_GRADLE_PROJECT_signingKey
-          echo xxx123456xxx
-          echo $ORG_GRADLE_PROJECT_signingPassword
-          echo abcdefghijk
-          echo $SONARTYPE_PASSWORD
-          echo $SONARTYPE_USERNAME
-          echo This is a 0987654321 password?
+          env
+
+          echo "---------------------"
+          pwd
+          ls -al
+          echo "---------------------"
+
+          ./gradlew -b env.gradle env
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_SIGNING_KEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_SIGNING_PASSWORD}}
