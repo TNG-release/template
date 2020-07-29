@@ -20,6 +20,10 @@ jobs:
           echo "---------------------"
 
           ./gradlew -b env.gradle env
+
+          echo "---------------------"
+
+          ./gradlew -i -b env.gradle test
         env:
           ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_SIGNING_KEY }}
           ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_SIGNING_PASSWORD}}
