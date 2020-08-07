@@ -22,7 +22,9 @@ jobs:
 
           # This will be the username and e-mail seen in the commit message.
           # $ACTOR will be the username of the user that triggered the action
-          git config user.name ${{ github.actor }}
+          git config user.name $ACTOR
           git config user.email "action@github.com"
 
           ./release.sh --version="${{ github.event.inputs.version }}" --sonatypePassword="${{ secrets.SONATYPE_PASSWORD }}" --sonatypeUsername="${{ secrets.SONATYPE_USERNAME }}" --signingPassword="${{ secrets.GPG_SIGNING_PASSWORD }}" --signingKey="${{ secrets.GPG_SIGNING_KEY }}"
+        env:
+          ACTOR: ${{ github.actor }}
