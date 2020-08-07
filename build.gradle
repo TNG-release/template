@@ -9,8 +9,8 @@ plugins {
 
 version = "1.0.0"
 isReleaseVersion = !version.endsWith("SNAPSHOT")
-sonatypeUsername = System.getenv().getOrDefault("SONATYPE_USERNAME", "")
-sonatypePassword = System.getenv().getOrDefault("SONATYPE_PASSWORD", "")
+sonatypeUsername =  findProperty("sonatypeUsername")
+sonatypePassword = findProperty("sonatypePassword")
 
 // see https://github.com/Codearte/gradle-nexus-staging-plugin
 nexusStaging {

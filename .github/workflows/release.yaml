@@ -22,15 +22,7 @@ jobs:
 
           # This will be the username and e-mail seen in the commit message.
           # $ACTOR will be the username of the user that triggered the action
-          git config user.name $ACTOR
+          git config user.name ${{ github.actor }}
           git config user.email "action@github.com"
 
-          ./release.sh ${{ github.event.inputs.version }}
-        env:
-          ACTOR: ${{ github.actor }}
-          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_SIGNING_KEY }}
-          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_SIGNING_PASSWORD}}
-          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
-          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
-          GRADLE_PLUGIN_RELEASE_KEY: ${{ secrets.JGIVEN_GRADLE_PUBLISH_KEY }}
-          GRADLE_PLUGIN_RELEASE_PASSWORD: ${{ secrets.JGIVEN_GRADLE_PUBLISH_SECRET }}
+          ./release.sh --version="${{ github.event.inputs.version }}" --sonatypePassword="${{ secrets.SONATYPE_PASSWORD }}" --sonatypeUsername="${{ secrets.SONATYPE_USERNAME }}" --signingPassword="${{ secrets.GPG_SIGNING_PASSWORD }}" --signingKey="${{ secrets.GPG_SIGNING_KEY }}"

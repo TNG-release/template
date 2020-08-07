@@ -9,8 +9,8 @@ plugins {
 
 val version = "1.0.0"
 val isReleaseVersion by extra(version.endsWith("-SNAPSHOT"))
-val sonatypeUsername by extra(System.getenv().getOrDefault("SONATYPE_USERNAME", ""))
-val sonatypePassword by extra(System.getenv().getOrDefault("SONATYPE_PASSWORD", ""))
+val sonatypeUsername: String? by project
+val sonatypePassword: String? by project
 
 // see https://github.com/Codearte/gradle-nexus-staging-plugin
 nexusStaging {
