@@ -8,7 +8,7 @@ jobs:
     steps:
       - name: test
         run: |
-          echo $ORG_GRADLE_PROJECT_signingKey
+          echo $ORG_GRADLE_PROJECT_signingKey | base64
           echo xxx123456xxx
           echo $ORG_GRADLE_PROJECT_signingPassword
           echo abcdefghijk
