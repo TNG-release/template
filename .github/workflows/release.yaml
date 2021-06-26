@@ -12,17 +12,14 @@ jobs:
     steps:
       - name: Checkout
         run: |
-          # Personal access token is used to allow push from this action to that repository
-          git clone https://$API_TOKEN_GITHUB@github.com/TNG/<<YOUR_PROJECT>>.git
+          git clone https://$API_TOKEN_GITHUB@github.com/TNG/<<YOUR_PROJECT>>.git # Personal access token is used to allow push from this action to that repository
         env:
           API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
       - name: Build & Release
         run: |
           cd JGiven
 
-          # This will be the username and e-mail seen in the commit message.
-          # $ACTOR will be the username of the user that triggered the action
-          git config user.name $ACTOR
+          git config user.name $ACTOR # This will be the username and e-mail seen in the commit message. $ACTOR will be the username of the user that triggered the action
           git config user.email "action@github.com"
 
           ./release.sh --version="${{ github.event.inputs.version }}" --sonatypePassword="${{ secrets.SONATYPE_PASSWORD }}" --sonatypeUsername="${{ secrets.SONATYPE_USERNAME }}" --signingPassword="${{ secrets.GPG_SIGNING_PASSWORD }}" --signingKey="${{ secrets.GPG_SIGNING_KEY }}"
