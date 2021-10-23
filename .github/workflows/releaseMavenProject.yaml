@@ -1,0 +1,37 @@
+name: releaseMavenProject
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'You have to provide a version (e.g. 0.14.0)'
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        run: |
+          git clone https://$API_TOKEN_GITHUB@github.com/TNG/<<YOUR_PROJECT>>.git # Personal access token is used to allow push from this action to that repository
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.TNG_RELEASE_GITHUB_ACCOUNT_TOKEN }}
+      - name: Write settings.xml
+        run: |
+          mkdir ~/.m2
+          cp template/settings.xml ~/.m2
+          sed -i 's/SONATYPE_USERNAME/${{ secrets.SONATYPE_USERNAME}}/g' ~/.m2/settings.xml
+
+          ESCAPED_SONATYPE_PASSWORD=$(printf '%s\n' "${{ secrets.SONATYPE_PASSWORD}}" | sed -e 's/[\/&]/\\&/g')
+          sed -i "s/SONATYPE_PASSWORD/$ESCAPED_SONATYPE_PASSWORD/g" ~/.m2/settings.xml
+
+          ESCAPED_SIGNING_PASSWORD=$(printf '%s\n' "${{ secrets.GPG_SIGNING_PASSWORD}}" | sed -e 's/[\/&]/\\&/g')
+          sed -i "s/GPG_SIGNING_PASSWORD/$ESCAPED_SIGNING_PASSWORD/g" ~/.m2/settings.xml
+      - name: Set Signing key
+        run: |
+          mkdir .gnupg
+          echo "${{ secrets.GPG_SIGNING_KEY }}" > .gnupg/secret.gpg && gpg --import --batch .gnupg/secret.gpg
+          export GPG_TTY=$(tty)
+      - name: Publish
+        run: |
+          cd <<YOUR_PROJECT>>
+          mvn clean deploy -Psonatype-release
