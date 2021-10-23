@@ -1,4 +1,4 @@
-name: Release
+name: releaseGradleProject
 on:
   workflow_dispatch:
     inputs:
