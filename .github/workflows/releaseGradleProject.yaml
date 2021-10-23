@@ -14,7 +14,7 @@ jobs:
         run: |
           git clone https://$API_TOKEN_GITHUB@github.com/TNG/<<YOUR_PROJECT>>.git # Personal access token is used to allow push from this action to that repository
         env:
-          API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+          API_TOKEN_GITHUB: ${{ secrets.TNG_RELEASE_GITHUB_ACCOUNT_TOKEN }}
       - name: Build & Release
         run: |
           cd JGiven
