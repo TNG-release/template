@@ -34,7 +34,7 @@ You probably want to use this as a starting point for you own custom GitHub Acti
 ## Gradle project
 You should be interested in the following files
 * release.sh
-* build.gradle or build.gradle.kts
+* build.gradle
 * releaseGradleProject.yaml
 
 ####The build.gradle
