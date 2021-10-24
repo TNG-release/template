@@ -2,58 +2,41 @@
 // are used for the different plugins related to the publishing process.
 // Thus, the configuration of the project is clearly incomplete!
 plugins {
-    id 'io.codearte.nexus-staging' version '0.21.1'
-    id 'maven-publish'
-    id 'signing'
+    id "io.github.gradle-nexus.publish-plugin" version "1.1.0" apply true
 }
 
-version = "1.0.0"
-isReleaseVersion = !version.endsWith("SNAPSHOT")
-sonatypeUsername =  findProperty("sonatypeUsername")
-sonatypePassword = findProperty("sonatypePassword")
+ext.isReleaseVersion = !project.version.endsWith("-SNAPSHOT")
 
-// see https://github.com/Codearte/gradle-nexus-staging-plugin
-nexusStaging {
-    stagingProfileId = stagingProfileId
+nexusPublishing {
     packageGroup = 'com.tngtech'
-    username = sonatypeUsername
-    password = sonatypePassword
-    numberOfRetries = 30 // Sonatype can be a bit slow in closing the repository
-}
-
-publishing {
-    // see https://docs.gradle.org/current/userguide/publishing_maven.html
-    publications {
-        mavenJava(MavenPublication) {
-            // ...
-        }
-    }
-
     repositories {
-        maven {
-            def releasesRepoUrl = 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
-            def snapshotsRepoUrl = 'https://oss.sonatype.org/content/repositories/snapshots/'
-            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-
-            credentials {
-                username = sonatypeUsername
-                password = sonatypePassword
-            }
-
-            metadataSources {
-                gradleMetadata()
-            }
+        sonatype {
+            username = findProperty("sonatypeUsername")
+            password = findProperty("sonatypePassword")
         }
     }
 }
 
-// signing plugin, see http://www.gradle.org/docs/current/userguide/signing_plugin.html
-signing {
-    required {
-        isReleaseVersion && gradle.taskGraph.hasTask('publish')
+releaseProjects*.with {
+    apply plugin: "maven-publish"
+    apply plugin: "signing"
+
+
+    tasks.withType(PublishToMavenRepository) {
+        it.doFirst {
+            assert !gradle.startParameter.isParallelProjectExecutionEnabled():
+                    'uploading archives with parallel execution seems to lead to broken uploads in Sonatype Nexus'
+        }
     }
-    def signingKey = findProperty("signingKey")
-    def signingPassword = findProperty("signingPassword")
-    useInMemoryPgpKeys(signingKey, signingPassword)
-    sign configurations.archives
+
+    signing {
+        // requires gradle.properties, see http://www.gradle.org/docs/current/userguide/signing_plugin.html
+        required {
+            isReleaseVersion && gradle.taskGraph.hasTask('publish')
+        }
+        def signingKey = findProperty("signingKey")
+        def signingPassword = findProperty("signingPassword")
+        useInMemoryPgpKeys(signingKey, signingPassword)
+        sign publishing.publications.mavenJava
+    }
 }
