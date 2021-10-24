@@ -17,7 +17,7 @@ jobs:
           API_TOKEN_GITHUB: ${{ secrets.TNG_RELEASE_GITHUB_ACCOUNT_TOKEN }}
       - name: Build & Release
         run: |
-          cd JGiven
+          cd <<YOUR_PROJECT>>
 
           git config user.name $ACTOR # This will be the username and e-mail seen in the commit message. $ACTOR will be the username of the user that triggered the action
           git config user.email "action@github.com"
