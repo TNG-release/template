@@ -1,0 +1,25 @@
+<settings>
+    <servers>
+        <server>
+            <id> ossrh </id>
+            <username>SONATYPE_USERNAME</username>
+            <password>SONATYPE_PASSWORD</password>
+        </server>
+    </servers>
+    <profiles>
+        <profile>
+            <id>sonatype-release</id>
+            <activation>
+                <property>
+                    <name>env.PROFILE</name>
+                    <value>sonatype-release</value>
+                </property>
+            </activation>
+            <properties>
+                <gpg.executable>/usr/bin/gpg</gpg.executable>
+                <gpg.keyname>3984AC29B6C5097D5E95485520D52E9FDDB18E41</gpg.keyname>
+                <gpg.passphrase>GPG_SIGNING_PASSWORD</gpg.passphrase>
+            </properties>
+        </profile>
+    </profiles>
+</settings>
